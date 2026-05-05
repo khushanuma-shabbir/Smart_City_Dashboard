@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real-time disease outbreak risk assessment for Indian cities with AI-powered insights and predictive analytics">
+    <meta name="keywords" content="disease risk, health assessment, India, COVID-19, air quality, weather health">
+    <meta name="author" content="Disease Risk Predictor Team">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Advanced Disease Outbreak Risk Predictor">
+    <meta property="og:description" content="Real-time health risk assessment with AI-powered insights">
+    <meta property="og:image" content="/preview.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Advanced Disease Outbreak Risk Predictor">
+    <meta name="twitter:description" content="Real-time health risk assessment with AI-powered insights">
+    
+    <title>Advanced Disease Outbreak Risk Predictor - India</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    
+    <!-- Preconnect to API domains for faster loading -->
+    <link rel="preconnect" href="https://api.openweathermap.org">
+    <link rel="preconnect" href="https://api.airvisual.com">
+</head>
+
+<body>
+    <div class="container">
+        <div class="theme-controls">
+            <button class="theme-btn" onclick="toggleTheme()" title="Toggle Dark Mode">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+            <button class="speech-btn" onclick="toggleSpeech()" title="Toggle Speech">
+                <i class="fas fa-volume-up" id="speech-icon"></i>
+            </button>
+            <button class="location-btn" onclick="detectLocation()" title="Detect My Location">
+                <i class="fas fa-location-crosshairs" id="location-icon"></i>
+            </button>
+        </div>
+
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-virus"></i>
+                </div>
+            </div>
+            <h1>Advanced Disease Risk Predictor</h1>
+            <p>Real-time health risk assessment with AI-powered insights & predictive analytics</p>
+            <div class="header-badges">
+                <span class="badge"><i class="fas fa-satellite-dish"></i> Live Data</span>
+                <span class="badge"><i class="fas fa-brain"></i> AI Powered</span>
+                <span class="badge"><i class="fas fa-chart-line"></i> Predictive</span>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="number">28</div>
+                <div class="label">States</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">150+</div>
+                <div class="label">Cities</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">24/7</div>
+                <div class="label">Monitoring</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">Real-time</div>
+                <div class="label">Data</div>
+            </div>
+        </div>
+
+        <div class="keyboard-shortcuts-hint">
+            <button class="hint-btn" onclick="toggleShortcuts()">
+                <i class="fas fa-keyboard"></i> Keyboard Shortcuts
+            </button>
+            <div id="shortcutsPanel" class="shortcuts-panel" style="display: none;">
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>K</kbd>
+                    <span>Focus search</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                    <span>Analyze risk</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>H</kbd>
+                    <span>View history</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>L</kbd>
+                    <span>Detect location</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Esc</kbd>
+                    <span>Close modals</span>
+                </div>
+            </div>
+        </div>
+
+        <form id="riskForm" role="search" aria-label="Disease risk search form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="stateInput"><i class="fas fa-map-marker-alt"></i> Select State</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="stateInput" 
+                            class="form-control" 
+                            placeholder="Type your state name..." 
+                            oninput="autocompleteState()"
+                            autocomplete="off"
+                            aria-label="State name"
+                            aria-describedby="state-help">
+                        <i class="fas fa-chevron-down input-icon" aria-hidden="true"></i>
+                        <div id="stateSuggestions" class="suggestions-box" role="listbox" aria-label="State suggestions"></div>
+                    </div>
+                    <span id="state-help" class="visually-hidden">Type to search for your state</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="cityInput"><i class="fas fa-city"></i> Select City</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="cityInput" 
+                            class="form-control" 
+                            placeholder="Type your city name..." 
+                            oninput="autocompleteCity()"
+                            autocomplete="off"
+                            aria-label="City name"
+                            aria-describedby="city-help">
+                        <i class="fas fa-chevron-down input-icon" aria-hidden="true"></i>
+                        <div id="suggestions" class="suggestions-box" role="listbox" aria-label="City suggestions"></div>
+                    </div>
+                    <span id="city-help" class="visually-hidden">Type to search for your city</span>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="checkRisk()">
+                    <i class="fas fa-search"></i> Analyze Risk Level
+                </button>
+                <button type="button" class="btn-secondary" onclick="showHistoricalData()">
+                    <i class="fas fa-history"></i> View History
+                </button>
+            </div>
+        </form>
+
+        <div id="quickStats" class="quick-stats" style="display: none;">
+            <div class="quick-stat-card">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="stat-content">
+                    <div class="stat-value" id="avgRisk">--</div>
+                    <div class="stat-label">Avg Risk</div>
+                </div>
+            </div>
+            <div class="quick-stat-card">
+                <i class="fas fa-search-location"></i>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalSearches">0</div>
+                    <div class="stat-label">Searches</div>
+                </div>
+            </div>
+            <div class="quick-stat-card">
+                <i class="fas fa-clock"></i>
+                <div class="stat-content">
+                    <div class="stat-value" id="lastUpdate">--</div>
+                    <div class="stat-label">Last Check</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="loadingContainer" class="loading-container" role="status" aria-live="polite">
+            <div class="weather-spinner" aria-hidden="true">
+                <div class="sun"></div>
+                <div class="cloud"></div>
+            </div>
+            <h3>Analyzing health risk factors...</h3>
+            <div class="loading-facts">
+                <h4>Did you know?</h4>
+                <p id="loadingFact"></p>
+            </div>
+            <span class="visually-hidden">Loading risk analysis data</span>
+        </div>
+
+        <div id="result" role="region" aria-label="Risk assessment results"></div>
+
+        <div id="historicalModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-history"></i> Historical Risk Data</h2>
+                    <button class="close-btn" onclick="closeHistoricalModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <canvas id="historicalChart"></canvas>
+                    <div id="historicalList" class="historical-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="install-prompt" id="installPrompt" style="display: none;">
+        <div class="install-content">
+            <i class="fas fa-download"></i>
+            <div>
+                <strong>Install App</strong>
+                <p>Get quick access and offline support</p>
+            </div>
+            <button onclick="installApp()" class="install-btn">Install</button>
+            <button onclick="dismissInstall()" class="dismiss-btn"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
