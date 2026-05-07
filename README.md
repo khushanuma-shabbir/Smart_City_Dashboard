@@ -136,7 +136,7 @@ to provide intelligent public health insights for smarter and safer cities.
 
 ### 📊 Analytics Preview
 
-<img width="100%" src="assets/analytics-preview.png" />
+<img width="100%" src="img/demo_2.png" />
 
 ---
 
