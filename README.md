@@ -140,9 +140,21 @@ to provide intelligent public health insights for smarter and safer cities.
 
 ---
 
-## 🚀 Live Demo
+<div align="center">
 
-🔗 [View Live Project](smart-wheather-dashboard.netlify.app)
+# 🚀 Live Demo
+
+<a href="https://smart-wheather-dashboard.netlify.app" target="_blank">
+
+<img src="https://img.shields.io/badge/🌐_Launch_Live_Project-00C853?style=for-the-badge&logo=netlify&logoColor=white"/>
+
+</a>
+
+<br><br>
+
+✨ Experience the AI-powered Smart Health Analytics Platform in real time.
+
+</div>
 
 ---
 
