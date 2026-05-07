@@ -132,7 +132,7 @@ to provide intelligent public health insights for smarter and safer cities.
 
 ### 🌐 Dashboard Preview
 
-<img width="100%" src="assets/dashboard-preview.png" />
+<img width="100%" src="img/demo_1.png" />
 
 ### 📊 Analytics Preview
 
